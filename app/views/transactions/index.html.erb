@@ -11,6 +11,7 @@
       <th>Price</th>
       <th>Amount</th>
       <th>Fees</th>
+      <th>user_id</th>
       <th></th>
       <th></th>
       <th></th>
@@ -28,6 +29,7 @@
         <td><%= transaction.Price %></td>
         <td><%= transaction.Amount %></td>
         <td><%= transaction.Fees %></td>
+        <td><%= transaction.user_id %></td>
         <td><%= link_to 'Show', transaction %></td>
         <td><%= link_to 'Edit', edit_transaction_path(transaction) %></td>
         <td><%= link_to 'Destroy', transaction, method: :delete, data: { confirm: 'Are you sure?' } %></td>
