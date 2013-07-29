@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  Date: 2013-07-28
+  Action: MyText
+  Quantity: 1
+  Symbol: MyString
+  Description: MyText
+  Price: 1.5
+  Amount: 1.5
+  Fees: 1.5
+
+two:
+  Date: 2013-07-28
+  Action: MyText
+  Quantity: 1
+  Symbol: MyString
+  Description: MyText
+  Price: 1.5
+  Amount: 1.5
+  Fees: 1.5
