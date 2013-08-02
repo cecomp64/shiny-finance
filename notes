@@ -1,0 +1,4 @@
+
+
+* Link to a route in a view
+<%= "Home", root_path %>
