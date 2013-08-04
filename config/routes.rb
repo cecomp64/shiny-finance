@@ -5,7 +5,6 @@ ShinyFinance::Application.routes.draw do
   match '/signup', to: 'users#new', via: 'get'
 
   resources :transactions
-
   resources :users
 
   # The priority is based upon order of creation: first created -> highest priority.

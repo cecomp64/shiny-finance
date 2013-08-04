@@ -8,4 +8,10 @@
 </head>
 <body>
 
+  <% flash.each do |key, value| %>
+    <div id="flash" class="<%= key %>">
+      <h2 class="<%= key %>"><%= key.to_s.capitalize %></h2>
+			<p><%= value %></p>
+    </div>
+  <% end %>
 

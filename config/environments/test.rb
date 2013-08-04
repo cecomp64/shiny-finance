@@ -33,4 +33,7 @@ ShinyFinance::Application.configure do
 
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
+
+	# Speed up bcrypt for testing only
+	ActiveModel::SecurePassword.min_cost = true
 end
