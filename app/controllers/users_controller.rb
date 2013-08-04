@@ -37,11 +37,7 @@ class UsersController < ApplicationController
         format.html { render action: 'new' }
         format.json { render json: @user.errors, status: :unprocessable_entity }
 
-				flash[:error] = "You have " + pluralize(@user.errors.count, "error") + " with your submission:"
-				@user.errors.full_messages.each do |msg|
-					flash[:error] += ".  " + msg
-				end
-
+				flash_errors
       end
     end
   end
@@ -53,9 +49,12 @@ class UsersController < ApplicationController
       if @user.update(user_params)
         format.html { redirect_to @user }
         format.json { head :no_content }
+				flash[:success] = "Successfully updated your profile!"
       else
         format.html { render action: 'edit' }
         format.json { render json: @user.errors, status: :unprocessable_entity }
+
+				flash_errors
       end
     end
   end
@@ -80,4 +79,11 @@ class UsersController < ApplicationController
     def user_params
       params.require(:user).permit(:name, :email, :password, :password_confirmation)
     end
+
+		def flash_errors
+		  flash[:error] = "You have " + pluralize(@user.errors.count, "error") + " with your submission:"
+			@user.errors.full_messages.each do |msg|
+				flash[:error] += "  ." + msg
+			end
+		end
 end
