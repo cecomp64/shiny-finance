@@ -17,3 +17,5 @@
 
 # Do not expose secret key
 /.secret
+*.swp
+*.swo

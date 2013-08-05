@@ -21,3 +21,27 @@
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
 }
+
+#header {
+  width: 100%;
+  border: 1px;
+  height: 50px;
+  position: relative;
+  float: left;
+  top: 0;
+  left: 0;
+  background-color: #B6E4FA;
+  margin-bottom: 10px;
+}
+
+#header ul {
+  position: absolute;
+  right: 10px;
+}
+
+#header ul li {
+  list-style: none;
+  float: left;
+  position: relative;
+  margin-left: 10px;
+}

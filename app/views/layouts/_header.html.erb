@@ -8,10 +8,21 @@
 </head>
 <body>
 
+  <div id="header">
+    <ul>
+      <li><%= link_to "Home", root_path %></li>
+      <li><%= link_to "About", about_path %></li>
+      <li>|</li>
+      <li><%= link_to "Sign In", signin_path %></li>
+    </ul>
+  </div>
+
+	<div id="content">
+	<h1><%= yield(:title) %></h1>
+
   <% flash.each do |key, value| %>
-    <div id="flash" class="<%= key %>">
+    <div class="flash <%= key %>">
       <h2 class="<%= key %>"><%= key.to_s.capitalize %></h2>
 			<p><%= value %></p>
     </div>
   <% end %>
-
