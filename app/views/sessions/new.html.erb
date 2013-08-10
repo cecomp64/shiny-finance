@@ -1,3 +1,18 @@
 <%= provide :title, "Sign in" %>
+<%= provide :heading, "Sign in" %>
 
+<%-# form_for (:session, url: sessions_url) do |f| %>
+<%= form_tag sessions_url %>
+	<div class="field">
+		<label for="email">Email</label>
+		<%= text_field_tag 'email' %>
+	</div>
+	<div class="field">
+		<label for="password">Password</label>
+		<%= text_field_tag 'password' %>
+	</div>
+	<div class ="actions">
+		<%= submit_tag "Sign in" %>
+	</div>
 
+<p>New user? <%= link_to "Sing up now!", signup_path %></p>

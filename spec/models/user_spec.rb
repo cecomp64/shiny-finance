@@ -11,6 +11,7 @@ describe User do
   it {should respond_to(:password)}
   it {should respond_to(:password_confirmation)}
   it {should respond_to(:authenticate)}
+  it {should respond_to(:remember_token)}
   it {should be_valid}
 
   # The following does not work.  It seems to modify the user used above
@@ -97,5 +98,10 @@ describe User do
 	describe "with a password that is too long" do
 		before { @user.password = @user.password_confirmation = "a" * 51 }
 		it {should_not be_valid}
+	end
+
+	describe "remember token" do
+		before {@user.save}
+		its(:remember_token) { should_not be_blank }
 	end
 end
