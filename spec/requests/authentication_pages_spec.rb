@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'utilities'
 
 describe "AuthenticationPages" do
 	subject {page}
@@ -43,6 +44,25 @@ describe "AuthenticationPages" do
 				it {should have_link('Sign In')}
 			end
 
+		end
+	end # Signin
+
+	describe "authorization" do
+		describe "for non-signed in users" do
+			let (:user) {FactoryGirl.create(:user)}
+
+			describe "in the Users controller" do
+				describe "visiting the edit page" do
+					before {visit edit_user_path(user)}
+					it {should have_title('Sign in')}
+				end # edit page
+
+				describe "submitting to the update action" do
+				  # patch issues an udpate http request (patch)
+					before {patch user_path(user)}
+					specify {expect(response).to redirect_to(signin_path)}
+				end
+			end
 		end
 	end
 end

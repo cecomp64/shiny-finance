@@ -2,6 +2,7 @@ include ActionView::Helpers::TextHelper
 
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy]
+  before_action :signed_in_user, only: [:edit, :update]
 
   # GET /users
   # GET /users.json
@@ -84,7 +85,11 @@ class UsersController < ApplicationController
 		def flash_errors
 		  flash[:error] = "You have " + pluralize(@user.errors.count, "error") + " with your submission:"
 			@user.errors.full_messages.each do |msg|
-				flash[:error] += "  ." + msg
+				flash[:error] += "  " + msg + "."
 			end
+		end
+
+		def signed_in_user
+			redirect_to signin_url, notice: "Please sign in." unless signed_in?
 		end
 end
