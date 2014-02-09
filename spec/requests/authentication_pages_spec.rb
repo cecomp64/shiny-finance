@@ -4,6 +4,11 @@ require 'utilities'
 describe "AuthenticationPages" do
 	subject {page}
 
+	describe "authorization" do
+		let(:user) { FactoryGirl.create(:user) }
+		before {sign_in(user) }
+	end
+
 	describe "signin page" do
 		before{ visit signin_path }
 		

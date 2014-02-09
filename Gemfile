@@ -4,6 +4,9 @@ source 'https://rubygems.org'
 gem 'rails', '4.0.0'
 gem 'bcrypt-ruby', '3.0.1'
 
+# For use with Capybara tests for debug
+gem "launchy", "~> 2.3.0"
+
 # Yahoo Finance API for real-time quotes
 gem 'yahoofinance', '1.2.2'
 

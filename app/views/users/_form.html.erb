@@ -16,6 +16,6 @@
     <%= f.password_field :password_confirmation %>
   </div>
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit (!yield(:button_label).empty? ? yield(:button_label) : "Save changes") %>
   </div>
 <% end %>

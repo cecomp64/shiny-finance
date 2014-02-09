@@ -1,5 +1,6 @@
 require 'open-uri'
 require 'nokogiri'
+require 'debug_logger'
 
 class GoogleFinanceScraper
 
@@ -11,7 +12,11 @@ class GoogleFinanceScraper
                "shares"=>"shares", "beta"=>"beta"}
   @@detail_keys.default = "unmapped"
 
-  def initialize()
+  # initialize
+  #   logging_mode - Sets the verbosity of debug messages
+  #
+  def initialize(logging_mode = DebugLogger.modes[:silent])
+    @logger = DebugLogger.new(logging_mode, "GogleFinanceScraper")
   end
 
   def lookup_by_exchange_and_symbol(exchange, symbol)
@@ -19,8 +24,10 @@ class GoogleFinanceScraper
     doc = Nokogiri::HTML(open("http://www.google.com/finance?q=#{exchange}:#{symbol}"))
     
     # Check for error
+    # TODO: if we get close to a symobl, we get a "did you mean" message... need to fix
     err = doc.css('#app div#gf-viewc div')[6].content
-    if err and err =~ /produced no matches/
+    #err = doc.css('#app div#gf-viewc')[6].content
+    if err and (err =~ /produced no matches/ or err =~ /Did you mean/)
       return nil
       end
 
@@ -42,7 +49,7 @@ class GoogleFinanceScraper
       td_l = tr.css('td')
       (key, val) = td_l
       mapped_key = @@detail_keys[key.content.strip.downcase] 
-      puts "DBG: mapped - #{mapped_key} unmapped - #{key.content.strip.downcase}\n"
+      @logger.dbg_log "mapped - #{mapped_key} unmapped - #{key.content.strip.downcase}\n"
       details[mapped_key] = val.content.strip
       end
 
