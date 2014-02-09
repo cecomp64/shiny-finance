@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'utilities'
+require 'support/utilities'
 
 describe "AuthenticationPages" do
 	subject {page}
