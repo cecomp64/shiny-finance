@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<title>class GoogleFinanceScraper - RDoc Documentation</title>
+
+<link type="text/css" media="screen" href="./rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+</script>
+
+<script type="text/javascript" charset="utf-8" src="./js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/navigation.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/search_index.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/search.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/searcher.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/darkfish.js"></script>
+
+
+<body id="top" class="class">
+<nav id="metadata">
+  <nav id="home-section" class="section">
+  <h3 class="section-header">
+    <a href="./index.html">Home</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </h3>
+</nav>
+
+
+  <nav id="search-section" class="section project-section" class="initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <h3 class="section-header">
+      <input type="text" name="search" placeholder="Search" id="search-field"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </h3>
+  </form>
+
+  <ul id="search-results" class="initially-hidden"></ul>
+</nav>
+
+
+  
+
+  <div id="file-metadata">
+    <nav id="file-list-section" class="section">
+  <h3 class="section-header">Defined In</h3>
+  <ul>
+    <li>google_finance_scraper.rb
+  </ul>
+</nav>
+
+    
+  </div>
+
+  <div id="class-metadata">
+    
+    <nav id="parent-class-section" class="section">
+  <h3 class="section-header">Parent</h3>
+  
+  <p class="link">Object
+  
+</nav>
+
+    
+    
+    <!-- Method Quickref -->
+<nav id="method-list-section" class="section">
+  <h3 class="section-header">Methods</h3>
+
+  <ul class="link-list">
+    
+    <li ><a href="#method-c-new">::new</a>
+    
+    <li ><a href="#method-i-lookup_by_exchange_and_symbol">#lookup_by_exchange_and_symbol</a>
+    
+    <li ><a href="#method-i-lookup_by_symbol">#lookup_by_symbol</a>
+    
+    <li ><a href="#method-i-lookup_historical_data">#lookup_historical_data</a>
+    
+    <li ><a href="#method-i-parse_csv">#parse_csv</a>
+    
+  </ul>
+</nav>
+
+  </div>
+
+  <div id="project-metadata">
+    
+    <nav id="classindex-section" class="section project-section">
+  <h3 class="section-header">Class and Module Index</h3>
+
+  <ul class="link-list">
+  
+    <li><a href="./DebugLogger.html">DebugLogger</a>
+  
+    <li><a href="./GoogleFinanceScraper.html">GoogleFinanceScraper</a>
+  
+  </ul>
+</nav>
+
+  </div>
+</nav>
+
+<div id="documentation">
+  <h1 class="class">class GoogleFinanceScraper</h1>
+
+  <div id="description" class="description">
+    
+<p>This class defines methods for querying stock information by scraping
+queries to the Google Finance webpage.</p>
+
+<h2 id="label-Examples">Examples<span><a href="#label-Examples">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+
+<pre>scraper = GoogleFinanceScraper.new()
+# Get the price for stock NVDA on exchange NASDAQ
+details = scraper.lookup_by_exchange_and_symbol(&quot;NASDAQ&quot;, &quot;NVDA&quot;)
+puts (&quot;Name: #{details[&#39;name&#39;]} Price: #{details[&#39;price&#39;]} Change: #{details[&#39;change&#39;]}&quot;)</pre>
+
+  </div><!-- description -->
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+
+    
+
+    <!-- Methods -->
+    
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section section">
+      <h3 class="section-header">Public Class Methods</h3>
+
+    
+      <div id="method-c-new" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">new</span><span
+            class="method-args">(logging_mode = DebugLogger.modes[:silent])</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Params:</p>
+<dl class="rdoc-list label-list"><dt>logging_mode
+<dd>
+<p>Sets the verbosity of debug messages</p>
+</dd></dl>
+          
+          
+
+          
+          <div class="method-source-code" id="new-source">
+            <pre><span class="ruby-comment"># File google_finance_scraper.rb, line 29</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">logging_mode</span> = <span class="ruby-constant">DebugLogger</span>.<span class="ruby-identifier">modes</span>[<span class="ruby-value">:silent</span>])
+  <span class="ruby-ivar">@logger</span> = <span class="ruby-constant">DebugLogger</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">logging_mode</span>, <span class="ruby-string">&quot;GogleFinanceScraper&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- new-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- new-method -->
+
+    
+    </section><!-- public-class-method-details -->
+  
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section section">
+      <h3 class="section-header">Public Instance Methods</h3>
+
+    
+      <div id="method-i-lookup_by_exchange_and_symbol" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">lookup_by_exchange_and_symbol</span><span
+            class="method-args">(exchange, symbol)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Looks up a stock price given both the eschange and symbol information</p>
+
+<p>Params:</p>
+<dl class="rdoc-list label-list"><dt>exchnage
+<dd>
+<p>Which exchange the stock resides on.  i.e. NYSE or NASDAQ</p>
+</dd><dt>symbol
+<dd>
+<p>The ticker symbol for the stock.  i.e. AMD or NVDA</p>
+</dd></dl>
+
+<p>Returns:</p>
+<dl class="rdoc-list label-list"><dt>details
+<dd>
+<p>A details hash with information about the stock.  Returns nil on failure</p>
+</dd></dl>
+          
+          
+
+          
+          <div class="method-source-code" id="lookup_by_exchange_and_symbol-source">
+            <pre><span class="ruby-comment"># File google_finance_scraper.rb, line 41</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">lookup_by_exchange_and_symbol</span>(<span class="ruby-identifier">exchange</span>, <span class="ruby-identifier">symbol</span>)
+  <span class="ruby-identifier">details</span> = {}
+  <span class="ruby-identifier">doc</span> = <span class="ruby-constant">Nokogiri</span><span class="ruby-operator">::</span><span class="ruby-constant">HTML</span>(<span class="ruby-identifier">open</span>(<span class="ruby-node">&quot;http://www.google.com/finance?q=#{exchange}:#{symbol}&quot;</span>))
+  
+  <span class="ruby-comment"># Check for error</span>
+  <span class="ruby-comment"># TODO: if we get close to a symobl, we get a &quot;did you mean&quot; message... need to fix</span>
+  <span class="ruby-identifier">err</span> = <span class="ruby-identifier">doc</span>.<span class="ruby-identifier">css</span>(<span class="ruby-string">&#39;#app div#gf-viewc div&#39;</span>)[<span class="ruby-value">6</span>].<span class="ruby-identifier">content</span>
+  <span class="ruby-comment">#err = doc.css(&#39;#app div#gf-viewc&#39;)[6].content</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">err</span> <span class="ruby-keyword">and</span> (<span class="ruby-identifier">err</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">/produced no matches/</span> <span class="ruby-keyword">or</span> <span class="ruby-identifier">err</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">/Did you mean/</span>)
+    <span class="ruby-keyword">return</span> <span class="ruby-keyword">nil</span>
+    <span class="ruby-keyword">end</span>
+
+  <span class="ruby-comment"># Scrape out name</span>
+  <span class="ruby-identifier">details</span>[<span class="ruby-string">&quot;name&quot;</span>] = <span class="ruby-identifier">doc</span>.<span class="ruby-identifier">search</span>(<span class="ruby-string">&#39;//meta[@itemprop=&quot;name&quot;]&#39;</span>).<span class="ruby-identifier">first</span>[<span class="ruby-string">&#39;content&#39;</span>]
+
+  <span class="ruby-comment"># Scrape out price and daily change</span>
+  <span class="ruby-identifier">t</span> = <span class="ruby-identifier">doc</span>.<span class="ruby-identifier">css</span>(<span class="ruby-string">&#39;#price-panel&#39;</span>)
+  <span class="ruby-identifier">details</span>[<span class="ruby-string">&quot;price&quot;</span>] = <span class="ruby-identifier">t</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">css</span>(<span class="ruby-string">&#39;div span.pr span&#39;</span>)[<span class="ruby-value">0</span>].<span class="ruby-identifier">content</span>.<span class="ruby-identifier">strip</span>
+
+  <span class="ruby-identifier">t</span> = <span class="ruby-identifier">doc</span>.<span class="ruby-identifier">css</span>(<span class="ruby-string">&#39;.id-price-change span span&#39;</span>)
+  <span class="ruby-identifier">details</span>[<span class="ruby-string">&quot;change_amt&quot;</span>] = <span class="ruby-identifier">t</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">content</span>.<span class="ruby-identifier">strip</span>
+  <span class="ruby-identifier">details</span>[<span class="ruby-string">&quot;change_pct&quot;</span>] = <span class="ruby-identifier">t</span>[<span class="ruby-value">1</span>].<span class="ruby-identifier">content</span>.<span class="ruby-identifier">strip</span>
+
+  <span class="ruby-identifier">tr_l</span> = <span class="ruby-identifier">doc</span>.<span class="ruby-identifier">css</span>(<span class="ruby-string">&#39;table.snap-data tr&#39;</span>)
+  
+  <span class="ruby-comment"># Scrape out other details</span>
+  <span class="ruby-keyword">for</span> <span class="ruby-identifier">tr</span> <span class="ruby-keyword">in</span> <span class="ruby-identifier">tr_l</span>
+    <span class="ruby-identifier">td_l</span> = <span class="ruby-identifier">tr</span>.<span class="ruby-identifier">css</span>(<span class="ruby-string">&#39;td&#39;</span>)
+    (<span class="ruby-identifier">key</span>, <span class="ruby-identifier">val</span>) = <span class="ruby-identifier">td_l</span>
+    <span class="ruby-identifier">mapped_key</span> = <span class="ruby-identifier">@@detail_keys</span>[<span class="ruby-identifier">key</span>.<span class="ruby-identifier">content</span>.<span class="ruby-identifier">strip</span>.<span class="ruby-identifier">downcase</span>] 
+    <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">dbg_log</span> <span class="ruby-node">&quot;mapped - #{mapped_key} unmapped - #{key.content.strip.downcase}\n&quot;</span>
+    <span class="ruby-identifier">details</span>[<span class="ruby-identifier">mapped_key</span>] = <span class="ruby-identifier">val</span>.<span class="ruby-identifier">content</span>.<span class="ruby-identifier">strip</span>
+    <span class="ruby-keyword">end</span>
+
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">details</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- lookup_by_exchange_and_symbol-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- lookup_by_exchange_and_symbol-method -->
+
+    
+      <div id="method-i-lookup_by_symbol" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">lookup_by_symbol</span><span
+            class="method-args">(symbol)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Looks up a stock by just its ticker symbol</p>
+
+<p>Params:</p>
+<dl class="rdoc-list label-list"><dt>symbol
+<dd>
+<p>The ticker symbol for a stock.  i.e. NVDA</p>
+</dd></dl>
+
+<p>Returns:</p>
+<dl class="rdoc-list label-list"><dt>details
+<dd>
+<p>A details hash with information about the stock.  Returns nil on failure</p>
+</dd></dl>
+          
+          
+
+          
+          <div class="method-source-code" id="lookup_by_symbol-source">
+            <pre><span class="ruby-comment"># File google_finance_scraper.rb, line 85</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">lookup_by_symbol</span>(<span class="ruby-identifier">symbol</span>)
+  <span class="ruby-comment"># For now, let Google figure it out</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">lookup_by_exchange_and_symbol</span>(<span class="ruby-string">&quot;&quot;</span>, <span class="ruby-identifier">symbol</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- lookup_by_symbol-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- lookup_by_symbol-method -->
+
+    
+      <div id="method-i-lookup_historical_data" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">lookup_historical_data</span><span
+            class="method-args">(params)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Retrieves historical data for a given stock. Takes parameters as a hash,
+since there can be many optional parameters.</p>
+
+<p>Params:</p>
+<dl class="rdoc-list label-list"><dt>params
+<dd>
+<p>A hash of parameters with the following elements</p>
+</dd></dl>
+<ul><li>
+<p><code>:exchange</code> - The exchange this stock is on.  i.e. NASDAQ</p>
+</li><li>
+<p><code>:symbol</code> - The ticker symbol for this stock.</p>
+</li><li>
+<p><code>:start_date</code> - Unimplemented</p>
+</li><li>
+<p><code>:end_date</code> - Unimplemented</p>
+</li></ul>
+          
+          
+
+          
+          <div class="method-source-code" id="lookup_historical_data-source">
+            <pre><span class="ruby-comment"># File google_finance_scraper.rb, line 121</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">lookup_historical_data</span>(<span class="ruby-identifier">params</span>)
+  <span class="ruby-identifier">exchange</span> = <span class="ruby-identifier">params</span>[<span class="ruby-value">:exchange</span>]
+  <span class="ruby-identifier">symbol</span> = <span class="ruby-identifier">params</span>[<span class="ruby-value">:symbol</span>]
+
+  <span class="ruby-comment"># Catch any exceptions from bad requests</span>
+  <span class="ruby-keyword">begin</span>
+    <span class="ruby-identifier">uri</span> = <span class="ruby-identifier">open</span>(<span class="ruby-node">&quot;http://www.google.com/finance/historical?q=#{exchange}:#{symbol}&amp;output=csv&quot;</span>)
+  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">OpenURI</span><span class="ruby-operator">::</span><span class="ruby-constant">HTTPError</span>=<span class="ruby-operator">&gt;</span><span class="ruby-identifier">e</span>
+    <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">dbg_log</span>(<span class="ruby-identifier">e</span>)
+    <span class="ruby-keyword">return</span> <span class="ruby-keyword">nil</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">csv</span> = <span class="ruby-identifier">uri</span>.<span class="ruby-identifier">read</span>
+
+  <span class="ruby-comment"># Fix Date string</span>
+  <span class="ruby-identifier">csv</span>.<span class="ruby-identifier">sub!</span>(<span class="ruby-regexp">/.*Date,/</span>, <span class="ruby-string">&quot;Date,&quot;</span>)
+  <span class="ruby-identifier">data</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">parse_csv</span>(<span class="ruby-identifier">csv</span>)
+  <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">dbg_log</span>(<span class="ruby-identifier">data</span>[<span class="ruby-value">1</span>])
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">data</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- lookup_historical_data-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- lookup_historical_data-method -->
+
+    
+      <div id="method-i-parse_csv" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">parse_csv</span><span
+            class="method-args">(csv)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Parses csv files from Google Finance historical data</p>
+
+<p>Params:</p>
+<dl class="rdoc-list label-list"><dt>csv
+<dd>
+<p>A String object containing the csv data</p>
+</dd></dl>
+
+<p>Returns:</p>
+<dl class="rdoc-list label-list"><dt>data
+<dd>
+<p>A list of lists.  Each entry contains a row in the csv.  The first entry
+contains the headings.</p>
+</dd></dl>
+          
+          
+
+          
+          <div class="method-source-code" id="parse_csv-source">
+            <pre><span class="ruby-comment"># File google_finance_scraper.rb, line 98</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">parse_csv</span>(<span class="ruby-identifier">csv</span>)
+  <span class="ruby-comment"># Return a list of rows</span>
+  <span class="ruby-comment"># First row is header data</span>
+  <span class="ruby-identifier">data</span> = []
+  <span class="ruby-identifier">lines</span> = <span class="ruby-identifier">csv</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\n&quot;</span>)
+
+  <span class="ruby-keyword">for</span> <span class="ruby-identifier">l</span> <span class="ruby-keyword">in</span> <span class="ruby-identifier">lines</span>
+    <span class="ruby-identifier">data</span>.<span class="ruby-identifier">append</span>(<span class="ruby-identifier">l</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&#39;,&#39;</span>))
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">data</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- parse_csv-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- parse_csv-method -->
+
+    
+    </section><!-- public-instance-method-details -->
+  
+  </section><!-- 5Buntitled-5D -->
+
+</div><!-- documentation -->
+
+
+<footer id="validator-badges">
+  <p><a href="http://validator.w3.org/check/referer">[Validate]</a>
+  <p>Generated by <a href="https://github.com/rdoc/rdoc">RDoc</a> 4.0.1.
+  <p>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish Rdoc Generator</a> 3.
+</footer>
+
