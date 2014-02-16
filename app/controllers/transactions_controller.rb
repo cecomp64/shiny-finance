@@ -1,10 +1,14 @@
 class TransactionsController < ApplicationController
   before_action :set_transaction, only: [:show, :edit, :update, :destroy]
+  before_action :signed_in_user, only: [:show, :edit, :update, :destroy, :index]
 
   # GET /transactions
   # GET /transactions.json
   def index
-    @transactions = Transaction.all
+    @transactions = Transaction.find_all_by_user_id(current_user.id)
+    if not @transactions
+      flash.now[:error] = "No transactions found for this user!"
+    end
   end
 
   # GET /transactions/1
@@ -19,6 +23,9 @@ class TransactionsController < ApplicationController
 
   # GET /transactions/1/edit
   def edit
+  end
+
+  def import
   end
 
   # POST /transactions
@@ -61,6 +68,29 @@ class TransactionsController < ApplicationController
     end
   end
 
+  def import_schwab_csv
+    csv = params[:upload].read()
+
+    if (csv)
+      sp = SchwabParser.new
+      transactions = sp.parse(csv)
+  
+      transactions.each do |trans|
+        trans[:user_id] = current_user.id
+        t = Transaction.new(trans)
+        if not t.save
+          flash[:warn] = "Could not save transaction #{trans.to_s}"
+        end
+      end
+
+      flash[:success] = "Successfully imported transactions!"
+      redirect_to transactions_url
+    else
+      flash[:error] = "Unable to read uploaded CSV file"
+      render action: import
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_transaction
@@ -71,4 +101,8 @@ class TransactionsController < ApplicationController
     def transaction_params
       params.require(:transaction).permit(:Date, :Action, :Quantity, :Symbol, :Description, :Price, :Amount, :Fees, :user_id)
     end
+
+		def signed_in_user
+			redirect_to signin_url, notice: "Please sign in." unless signed_in?
+		end
 end

@@ -1,0 +1,8 @@
+<h1>Import Data</h1>
+
+<h2>Schwab CSV</h2>
+<%= form_tag({:action => 'import_schwab_csv'}, :multipart => true) do %>
+<p><label for="upload_file">Select File</label> : 
+<%= file_field_tag 'upload' %></p>
+<%= submit_tag "Upload" %>
+<% end %>

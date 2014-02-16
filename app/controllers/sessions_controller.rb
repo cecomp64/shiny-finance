@@ -1,3 +1,4 @@
+# Handles session needs by creating or destroying sessions
 class SessionsController < ApplicationController
 	def new
 	end

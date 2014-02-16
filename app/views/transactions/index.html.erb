@@ -1,5 +1,6 @@
 <h1>Listing transactions</h1>
 
+<% if @transactions != nil %>
 <table>
   <thead>
     <tr>
@@ -37,7 +38,8 @@
     <% end %>
   </tbody>
 </table>
-
+<% end %>
 <br>
 
 <%= link_to 'New Transaction', new_transaction_path %>
+<%= link_to 'Import Data', import_transactions_path %>
