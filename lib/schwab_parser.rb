@@ -177,15 +177,15 @@ class SchwabParser
     csv_l.each do |entry|
       @logger.dbg_log(entry.to_s)
       transaction = {}
-      transaction[:Date] = parse_date(entry[@date_pos])
-      transaction[:Action] = parse_action(entry)
-      transaction[:Quantity] = parse_quantity(entry[@quantity_pos])
-      transaction[:Symbol] = entry[@symbol_pos]
-      transaction[:Description] = entry[@desc_pos]
-      transaction[:Price] = convert_dollar_amount(entry[@price_pos])
-      transaction[:Amount] = convert_dollar_amount(entry[@amount_pos])
+      transaction[:date] = parse_date(entry[@date_pos])
+      transaction[:action] = parse_action(entry)
+      transaction[:quantity] = parse_quantity(entry[@quantity_pos])
+      transaction[:symbol] = entry[@symbol_pos]
+      transaction[:description] = entry[@desc_pos]
+      transaction[:price] = convert_dollar_amount(entry[@price_pos])
+      transaction[:amount] = convert_dollar_amount(entry[@amount_pos])
       # Parse fees after action, because action may alter the fees column
-      transaction[:Fees] = parse_fees(entry, transaction[:Action])
+      transaction[:fees] = parse_fees(entry, transaction[:Action])
 
       transactions.append(transaction)
     end

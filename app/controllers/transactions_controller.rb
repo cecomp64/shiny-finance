@@ -2,7 +2,7 @@ require 'google_finance_scraper'
 
 class TransactionsController < ApplicationController
   before_action :set_transaction, only: [:show, :edit, :update, :destroy]
-  before_action :signed_in_user, only: [:show, :edit, :update, :destroy, :index, :import, :import_schwab_csv]
+  before_action :signed_in_user, only: [:show, :edit, :update, :destroy, :index, :import, :import_schwab_csv, :analyze]
 
   # GET /transactions
   # GET /transactions.json
@@ -108,7 +108,7 @@ class TransactionsController < ApplicationController
       # Find all Buy transactions
       # Might need to rename Transaction database fields to lowercase...
       #@transactions = Transaction.find_all_by_Action("Buy", {:conditions => "WHERE user_id = #{current_user.id}"})
-      @transactions = Transaction.find_by_sql("SELECT * FROM transactions WHERE user_id = #{current_user.id} AND Action like 'Buy%'")
+      @transactions = Transaction.find_by_sql("SELECT * FROM transactions WHERE user_id = #{current_user.id} AND action like 'Buy%'")
       #logger.debug("Printing transactions...")
       #logger.debug(@transactions)
     #end
@@ -132,27 +132,27 @@ class TransactionsController < ApplicationController
   def analyze_transaction(trans)
     logger.debug "Original transaction: #{trans}\n\n"
     analyze = {}
-    analyze[:Action] = trans[:Action]
-    analyze[:Symbol] = trans[:Symbol]
-    analyze[:Price] = trans[:Price]
-    analyze[:Quantity] = trans[:Quantity]
-    analyze[:Cost] = (trans[:Price] * trans[:Quantity]) + trans[:Fees]
+    analyze[:action] = trans[:action]
+    analyze[:symbol] = trans[:symbol]
+    analyze[:price] = trans[:price]
+    analyze[:quantity] = trans[:quantity]
+    analyze[:cost] = (trans[:price] * trans[:quantity]) + trans[:fees]
 
-    current_info = @stock_source.lookup_by_symbol(trans[:Symbol])
+    current_info = @stock_source.lookup_by_symbol(trans[:symbol])
     current_price = 0.0
-    logger.debug "Lookup of #{trans[:Symbol]}: #{current_info}\n\n"
+    logger.debug "Lookup of #{trans[:symbol]}: #{current_info}\n\n"
 
     if (current_info) 
       current_price = current_info["price"]
     else
-      flash[:error] = "Could not find price for #{trans[:Symbol]}"
+      flash[:error] = "Could not find price for #{trans[:symbol]}"
     end
 
-    analyze[:CurrentPrice] = current_price
+    analyze[:currentPrice] = current_price
     # TODO: How do you compute dividends for any given lot?
-    analyze[:DividendEarnings] = 0.0
-    analyze[:TotalEarned] = analyze[:CurrentPrice] * trans[:Quantity]
-    analyze[:Return] = (analyze[:TotalEarned] - analyze[:Cost]) / analyze[:Cost]
+    analyze[:dividendEarnings] = 0.0
+    analyze[:totalEarned] = analyze[:currentPrice] * trans[:quantity]
+    analyze[:return] = (analyze[:totalEarned] - analyze[:cost]) / analyze[:cost]
     logger.debug "Analyze transaction: #{analyze}\n\n"
     return analyze
   end
@@ -165,7 +165,7 @@ class TransactionsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def transaction_params
-      params.require(:transaction).permit(:Date, :Action, :Quantity, :Symbol, :Description, :Price, :Amount, :Fees, :user_id)
+      params.require(:transaction).permit(:date, :action, :quantity, :symbol, :description, :price, :amount, :fees, :user_id)
     end
 
     # Check if the user is signed in.  If not, redirect to sign in page.

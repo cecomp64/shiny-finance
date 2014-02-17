@@ -11,17 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130805020633) do
+ActiveRecord::Schema.define(version: 20140217035049) do
 
   create_table "transactions", force: true do |t|
-    t.date     "Date"
-    t.text     "Action"
-    t.integer  "Quantity"
-    t.string   "Symbol"
-    t.text     "Description"
-    t.float    "Price"
-    t.float    "Amount"
-    t.float    "Fees"
+    t.date     "date"
+    t.text     "action"
+    t.integer  "quantity"
+    t.string   "symbol"
+    t.text     "description"
+    t.float    "price"
+    t.float    "amount"
+    t.float    "fees"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"

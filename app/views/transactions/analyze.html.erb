@@ -14,15 +14,15 @@
   </tr>
 <% @analyze.each do |analysis| %>
   <tr>
-    <td> <%= analysis[:Action] %></td>
-    <td> <%= analysis[:Symbol] %></td>
-    <td> $<%= analysis[:Price].round(2) %></td>
-    <td> <%= analysis[:Quantity].round(2) %></td>
-    <td> $<%= analysis[:Cost].round(2) %></td>
-    <td> $<%= analysis[:DividendEarnings].round(2) %></td>
-    <td> $<%= analysis[:CurrentPrice].round(2) %></td>
-    <td> $<%= analysis[:TotalEarned].round(2) %></td>
-    <td> <%= (analysis[:Return]*100).round(2) %>%</td>
+    <td> <%= analysis[:action] %></td>
+    <td> <%= analysis[:symbol] %></td>
+    <td> $<%= analysis[:price].round(2) %></td>
+    <td> <%= analysis[:quantity].round(2) %></td>
+    <td> $<%= analysis[:cost].round(2) %></td>
+    <td> $<%= analysis[:dividendEarnings].round(2) %></td>
+    <td> $<%= analysis[:currentPrice].round(2) %></td>
+    <td> $<%= analysis[:totalEarned].round(2) %></td>
+    <td> <%= (analysis[:return]*100).round(2) %>%</td>
   </tr>
 <% end %>
 </table>

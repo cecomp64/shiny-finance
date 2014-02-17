@@ -80,9 +80,9 @@ describe SchwabParser do
     it "parses" do
       transactions = parser.parse(csv_2_15)
       expect(transactions.size).to eq(5)
-      expect(transactions[0][:Date]).to eq(Date.new(2013,10,15))
-      expect(transactions[4][:Fees]).to eq(8.95)
-      expect(transactions[4][:Amount]).to eq(-996.35)
+      expect(transactions[0][:date]).to eq(Date.new(2013,10,15))
+      expect(transactions[4][:fees]).to eq(8.95)
+      expect(transactions[4][:amount]).to eq(-996.35)
     end
   end
 

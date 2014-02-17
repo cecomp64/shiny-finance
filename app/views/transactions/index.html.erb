@@ -22,14 +22,14 @@
   <tbody>
     <% @transactions.each do |transaction| %>
       <tr>
-        <td><%= transaction.Date %></td>
-        <td><%= transaction.Action %></td>
-        <td><%= transaction.Quantity %></td>
-        <td><%= transaction.Symbol %></td>
-        <td><%= transaction.Description %></td>
-        <td><%= transaction.Price %></td>
-        <td><%= transaction.Amount %></td>
-        <td><%= transaction.Fees %></td>
+        <td><%= transaction.date %></td>
+        <td><%= transaction.action %></td>
+        <td><%= transaction.quantity %></td>
+        <td><%= transaction.symbol %></td>
+        <td><%= transaction.description %></td>
+        <td><%= transaction.price %></td>
+        <td><%= transaction.amount %></td>
+        <td><%= transaction.fees %></td>
         <td><%= transaction.user_id %></td>
         <td><%= link_to 'Show', transaction %></td>
         <td><%= link_to 'Edit', edit_transaction_path(transaction) %></td>
