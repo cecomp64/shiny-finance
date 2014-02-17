@@ -13,6 +13,12 @@ describe GoogleFinanceScraper do
       expect(name).to eq("NVIDIA Corporation")
     end
 
+    it "Should have a numeric price" do
+      price = details_nvd["price"]
+      expect(price.is_a? Float).to eq(true)
+      expect(price > 0.0).to eq(true)
+    end
+
     details_amd = scraper.lookup_by_exchange_and_symbol("NYSE", "AMD")
     it "NYSE:AMD should have a valid name field" do
       name = details_amd["name"]
@@ -51,7 +57,7 @@ describe GoogleFinanceScraper do
     end
   end
 
-  describe "Get historical data with valid data" do
+  describe "Get historical data with invalid data" do
     details = scraper.lookup_historical_data(:symbol => "POOP")
     it "POOP should return nil" do
       expect(details).to eq(nil)

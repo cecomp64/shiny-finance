@@ -13,6 +13,7 @@ require 'debug_logger'
 #   puts ("Name: #{details['name']} Price: #{details['price']} Change: #{details['change']}")
 
 class GoogleFinanceScraper
+  include LibHelpers
 
   # These are translations of headings in the Google Finance page to
   # more user-friendly hash names
@@ -55,7 +56,8 @@ class GoogleFinanceScraper
 
     # Scrape out price and daily change
     t = doc.css('#price-panel')
-    details["price"] = t[0].css('div span.pr span')[0].content.strip
+    price = t[0].css('div span.pr span')[0].content.strip
+    details["price"] = convert_dollar_amount(price)
 
     t = doc.css('.id-price-change span span')
     details["change_amt"] = t[0].content.strip

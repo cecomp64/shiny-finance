@@ -1,6 +1,8 @@
+require 'google_finance_scraper'
+
 class TransactionsController < ApplicationController
   before_action :set_transaction, only: [:show, :edit, :update, :destroy]
-  before_action :signed_in_user, only: [:show, :edit, :update, :destroy, :index]
+  before_action :signed_in_user, only: [:show, :edit, :update, :destroy, :index, :import, :import_schwab_csv]
 
   # GET /transactions
   # GET /transactions.json
@@ -25,6 +27,7 @@ class TransactionsController < ApplicationController
   def edit
   end
 
+  # GET /import
   def import
   end
 
@@ -68,6 +71,10 @@ class TransactionsController < ApplicationController
     end
   end
 
+  # This is the action for the import view.
+  # It takes a file in [:upload] and converts it
+  # to a set of transaction objects, and then saves
+  # them all for the signed in user.
   def import_schwab_csv
     csv = params[:upload].read()
 
@@ -91,6 +98,65 @@ class TransactionsController < ApplicationController
     end
   end
 
+  # Analyze a subset or all transactions.  If no parameter is provided
+  # Iterate over every Buy action
+  def analyze
+    @transactions = []
+    #if params[:symbol]
+      # Compute one transactions
+    #else
+      # Find all Buy transactions
+      # Might need to rename Transaction database fields to lowercase...
+      #@transactions = Transaction.find_all_by_Action("Buy", {:conditions => "WHERE user_id = #{current_user.id}"})
+      @transactions = Transaction.find_by_sql("SELECT * FROM transactions WHERE user_id = #{current_user.id} AND Action like 'Buy%'")
+      #logger.debug("Printing transactions...")
+      #logger.debug(@transactions)
+    #end
+
+    # Compute some extra data
+    if @stock_source == nil
+      @stock_source = GoogleFinanceScraper.new(DebugLogger.modes[:debug])
+    end
+
+    @analyze = []
+    @transactions.each do |trans|
+      @analyze.append(analyze_transaction(trans))
+    end
+
+  end
+
+  # TODO: Need to look for sales of this stock, and correlate that with
+  # a specified lot.  Maybe default to selling oldest shares, and allow
+  # user to assign lot numbers to transactions.  Maybe create a resource
+  # to keep track of any given lot
+  def analyze_transaction(trans)
+    logger.debug "Original transaction: #{trans}\n\n"
+    analyze = {}
+    analyze[:Action] = trans[:Action]
+    analyze[:Symbol] = trans[:Symbol]
+    analyze[:Price] = trans[:Price]
+    analyze[:Quantity] = trans[:Quantity]
+    analyze[:Cost] = (trans[:Price] * trans[:Quantity]) + trans[:Fees]
+
+    current_info = @stock_source.lookup_by_symbol(trans[:Symbol])
+    current_price = 0.0
+    logger.debug "Lookup of #{trans[:Symbol]}: #{current_info}\n\n"
+
+    if (current_info) 
+      current_price = current_info["price"]
+    else
+      flash[:error] = "Could not find price for #{trans[:Symbol]}"
+    end
+
+    analyze[:CurrentPrice] = current_price
+    # TODO: How do you compute dividends for any given lot?
+    analyze[:DividendEarnings] = 0.0
+    analyze[:TotalEarned] = analyze[:CurrentPrice] * trans[:Quantity]
+    analyze[:Return] = (analyze[:TotalEarned] - analyze[:Cost]) / analyze[:Cost]
+    logger.debug "Analyze transaction: #{analyze}\n\n"
+    return analyze
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_transaction
@@ -102,6 +168,7 @@ class TransactionsController < ApplicationController
       params.require(:transaction).permit(:Date, :Action, :Quantity, :Symbol, :Description, :Price, :Amount, :Fees, :user_id)
     end
 
+    # Check if the user is signed in.  If not, redirect to sign in page.
 		def signed_in_user
 			redirect_to signin_url, notice: "Please sign in." unless signed_in?
 		end
