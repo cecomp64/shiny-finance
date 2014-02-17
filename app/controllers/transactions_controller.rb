@@ -99,7 +99,8 @@ class TransactionsController < ApplicationController
   end
 
   # Analyze a subset or all transactions.  If no parameter is provided
-  # Iterate over every Buy action
+  # Iterate over every Buy action for now.  Fix this to be a max of 30
+  # transactions to avoid timeouts.  TODO: Make this smart
   def analyze
     @transactions = []
     #if params[:symbol]
@@ -108,7 +109,7 @@ class TransactionsController < ApplicationController
       # Find all Buy transactions
       # Might need to rename Transaction database fields to lowercase...
       #@transactions = Transaction.find_all_by_Action("Buy", {:conditions => "WHERE user_id = #{current_user.id}"})
-      @transactions = Transaction.find_by_sql("SELECT * FROM transactions WHERE user_id = #{current_user.id} AND action like 'Buy%'")
+      @transactions = Transaction.find_by_sql("SELECT * FROM transactions WHERE user_id = #{current_user.id} AND action like 'Buy%' LIMIT 20")
       #logger.debug("Printing transactions...")
       #logger.debug(@transactions)
     #end
