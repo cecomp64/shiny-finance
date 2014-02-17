@@ -1,6 +1,6 @@
 require 'open-uri'
 require 'debug_logger'
-require 'CSV'
+require 'csv'
 
 # Contains logic to parse and format data from Schwab transactions
 # into shiny-finance transactions.
