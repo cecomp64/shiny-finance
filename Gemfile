@@ -10,6 +10,9 @@ gem "launchy", "~> 2.3.0"
 # Yahoo Finance API for real-time quotes
 gem 'yahoofinance', '1.2.2'
 
+# Scraping library
+gem "nokogiri"
+
 # Use sqlite3 as the database for Active Record
 group :development do
   gem 'sqlite3'
