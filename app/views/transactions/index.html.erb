@@ -23,7 +23,11 @@
     <% @transactions.each do |transaction| %>
       <tr>
         <td><%= transaction.date %></td>
-        <td><%= transaction.action %></td>
+        <td>
+        <% if transaction.action %>
+        <%= transaction.action.name.capitalize %>
+        <%end%>
+        </td>
         <td><%= transaction.quantity %></td>
         <td><%= transaction.symbol %></td>
         <td><%= transaction.description %></td>
@@ -43,3 +47,4 @@
 
 <%= link_to 'New Transaction', new_transaction_path %>
 <%= link_to 'Import Data', import_transactions_path %>
+<%= link_to 'Delete All Transactions', delete_all_transactions_path, data: { confirm: 'Are you sure?  This will clear all transaction data.' } %>

@@ -11,11 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140217035049) do
+ActiveRecord::Schema.define(version: 20140218010052) do
+
+  create_table "actions", force: true do |t|
+    t.string "name"
+  end
+
+  add_index "actions", ["name"], name: "index_actions_on_name", unique: true
 
   create_table "transactions", force: true do |t|
     t.date     "date"
-    t.text     "action"
     t.integer  "quantity"
     t.string   "symbol"
     t.text     "description"
@@ -25,6 +30,7 @@ ActiveRecord::Schema.define(version: 20140217035049) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
+    t.integer  "action_id"
   end
 
   add_index "transactions", ["user_id"], name: "index_transactions_on_user_id"

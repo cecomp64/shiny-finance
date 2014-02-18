@@ -13,7 +13,8 @@ ShinyFinance::Application.routes.draw do
   match '/import', to: 'transactions#import', via: 'get', as: 'import_transactions'
   match '/import_schwab_csv', to: 'transactions#import_schwab_csv', via: 'post', as: 'import_schwab_csv'
   #match '/transactions/analyze/:symbol', to: 'transactions#analyze', via: 'get', as: 'analyze_transaction_path'
-  match '/analyze', to: 'transactions#analyze', via: 'get', as: 'analyze_transactions_path'
+  match '/analyze', to: 'transactions#analyze', via: 'get', as: 'analyze_transactions'
+  match '/delete_my_transactions', to: 'transactions#delete_all', via: 'get', as: 'delete_all_transactions'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -2,7 +2,7 @@ require 'google_finance_scraper'
 
 class TransactionsController < ApplicationController
   before_action :set_transaction, only: [:show, :edit, :update, :destroy]
-  before_action :signed_in_user, only: [:show, :edit, :update, :destroy, :index, :import, :import_schwab_csv, :analyze]
+  before_action :signed_in_user, only: [:show, :edit, :update, :destroy, :index, :import, :import_schwab_csv, :analyze, :delete_all]
 
   # GET /transactions
   # GET /transactions.json
@@ -71,6 +71,16 @@ class TransactionsController < ApplicationController
     end
   end
 
+  # Delete all transactions for the signed in user
+  def delete_all
+    my_trans = Transaction.find_all_by_user_id(current_user.id)
+    my_trans.each do |trans|
+      trans.destroy
+    end
+
+    redirect_to transactions_url
+  end
+
   # This is the action for the import view.
   # It takes a file in [:upload] and converts it
   # to a set of transaction objects, and then saves
@@ -80,10 +90,27 @@ class TransactionsController < ApplicationController
 
     if (csv)
       sp = SchwabParser.new
-      transactions = sp.parse(csv)
-  
-      transactions.each do |trans|
+      trans_data = sp.parse(csv)
+      
+      # Create a hash of action names and ids
+      actions = Action.all
+
+      trans_data.each do |trans|
         trans[:user_id] = current_user.id
+        trans[:action] = nil
+
+        # Convert action description to action object
+        actions.each do |a|
+          if trans[:act] != nil and trans[:act].match(/#{a.name.singularize}/i)
+            trans[:action] = a
+          else
+            logger.debug "Transaction Parameters: #{trans}\n"
+          end
+        end
+
+        # Remove the act entry, otherwise Ruby will be confused
+        trans.delete(:act)
+
         t = Transaction.new(trans)
         if not t.save
           flash[:warn] = "Could not save transaction #{trans.to_s}"
@@ -109,7 +136,8 @@ class TransactionsController < ApplicationController
       # Find all Buy transactions
       # Might need to rename Transaction database fields to lowercase...
       #@transactions = Transaction.find_all_by_Action("Buy", {:conditions => "WHERE user_id = #{current_user.id}"})
-      @transactions = Transaction.find_by_sql("SELECT * FROM transactions WHERE user_id = #{current_user.id} AND action like 'Buy%' LIMIT 20")
+      #@transactions = Transaction.find_by_sql("SELECT * FROM transactions WHERE user_id = #{current_user.id} AND action like 'Buy%' LIMIT 20")
+      @transactions = Transaction.joins(:user).joins(:action).where(actions: {name: "buy"}).limit(20)
       #logger.debug("Printing transactions...")
       #logger.debug(@transactions)
     #end
@@ -133,26 +161,32 @@ class TransactionsController < ApplicationController
   def analyze_transaction(trans)
     logger.debug "Original transaction: #{trans}\n\n"
     analyze = {}
-    analyze[:action] = trans[:action]
-    analyze[:symbol] = trans[:symbol]
-    analyze[:price] = trans[:price]
-    analyze[:quantity] = trans[:quantity]
-    analyze[:cost] = (trans[:price] * trans[:quantity]) + trans[:fees]
 
-    current_info = @stock_source.lookup_by_symbol(trans[:symbol])
+    if (trans.action != nil)
+      analyze[:action] = trans.action.name.capitalize
+    else
+      analyze[:action] = "--"
+    end
+
+    analyze[:symbol] = trans.symbol
+    analyze[:price] = trans.price
+    analyze[:quantity] = trans.quantity
+    analyze[:cost] = (trans.price * trans.quantity) + trans.fees
+
+    current_info = @stock_source.lookup_by_symbol(trans.symbol)
     current_price = 0.0
-    logger.debug "Lookup of #{trans[:symbol]}: #{current_info}\n\n"
+    logger.debug "Lookup of #{trans.symbol}: #{current_info}\n\n"
 
-    if (current_info) 
+    if (current_info != nil) 
       current_price = current_info["price"]
     else
-      flash[:error] = "Could not find price for #{trans[:symbol]}"
+      flash[:error] = "Could not find price for #{trans.symbol}"
     end
 
     analyze[:currentPrice] = current_price
     # TODO: How do you compute dividends for any given lot?
     analyze[:dividendEarnings] = 0.0
-    analyze[:totalEarned] = analyze[:currentPrice] * trans[:quantity]
+    analyze[:totalEarned] = analyze[:currentPrice] * trans.quantity
     analyze[:return] = (analyze[:totalEarned] - analyze[:cost]) / analyze[:cost]
     logger.debug "Analyze transaction: #{analyze}\n\n"
     return analyze

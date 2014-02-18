@@ -6,7 +6,9 @@
 
 <p>
   <strong>Action:</strong>
-  <%= @transaction.action %>
+  <% if @transaction.action %>
+  <%= @transaction.action.name.capitalize %>
+  <%end%>
 </p>
 
 <p>
