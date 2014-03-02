@@ -1,7 +1,7 @@
 <h1>Listing transactions</h1>
 
 <% if @transactions != nil %>
-<table>
+<table class="summary_table">
   <thead>
     <tr>
       <th>Date</th>
@@ -20,8 +20,13 @@
   </thead>
 
   <tbody>
+    <% row = 0 %>
     <% @transactions.each do |transaction| %>
+      <% if row % 2 == 1%>
+      <tr class="alternate_row">
+      <% else %>
       <tr>
+      <%end%>
         <td><%= transaction.date %></td>
         <td>
         <% if transaction.action %>
@@ -31,14 +36,15 @@
         <td><%= transaction.quantity %></td>
         <td><%= transaction.symbol %></td>
         <td><%= transaction.description %></td>
-        <td><%= transaction.price %></td>
-        <td><%= transaction.amount %></td>
-        <td><%= transaction.fees %></td>
+        <td><%= render inline: dollar_str(transaction.price)%></td>
+        <td><%= render inline: dollar_str(transaction.amount)%></td>
+        <td><%= render inline: dollar_str(transaction.fees) %></td>
         <td><%= transaction.user_id %></td>
         <td><%= link_to 'Show', transaction %></td>
         <td><%= link_to 'Edit', edit_transaction_path(transaction) %></td>
         <td><%= link_to 'Destroy', transaction, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
+      <% row = row + 1 %>
     <% end %>
   </tbody>
 </table>

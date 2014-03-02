@@ -1,0 +1,28 @@
+<h1>Analyze</h1>
+<p> Only showing the first 20 transactions for now... </p>
+<table>
+  <tr>
+    <th>Action</th>
+    <th>Symbol</th>
+    <th>Price</th>
+    <th>Quantity</th>
+    <th>Cost</th>
+    <th>Dividends Earned</th>
+    <th>Today's Price</th>
+    <th>Total Earned</th>
+    <th>Percent Return</th>
+  </tr>
+<% @analyze.each do |analysis| %>
+  <tr>
+    <td> <%= analysis[:action] %></td>
+    <td> <%= analysis[:symbol] %></td>
+    <td> $<%= analysis[:price].round(2) %></td>
+    <td> <%= analysis[:quantity].round(2) %></td>
+    <td> $<%= analysis[:cost].round(2) %></td>
+    <td> $<%= analysis[:dividendEarnings].round(2) %></td>
+    <td> $<%= analysis[:currentPrice].round(2) %></td>
+    <td> $<%= analysis[:totalEarned].round(2) %></td>
+    <td> <%= (analysis[:return]*100).round(2) %>%</td>
+  </tr>
+<% end %>
+</table>

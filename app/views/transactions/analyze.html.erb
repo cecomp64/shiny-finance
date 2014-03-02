@@ -1,28 +1,47 @@
 <h1>Analyze</h1>
-<p> Only showing the first 20 transactions for now... </p>
+<p> Showing 10 equities at a time</p>
+<%= paginate @symbol_page %>
+<% @results.each do |result| %>
+<h2><%= result[:symbol] %>  $<%= "%.2f" % [result[:currentPrice].round(2)] %> <%= render inline: dollar_str(result[:change_amt]) %></h2>
+<%
+  # Construct a table struct
+  table = {}
+  table[:headings] = []
+  table[:rows] = []
+  table[:class] = "summary_table"
+  ["Date", "Action", "Price", "Quantity", "Lot", "Fees", "Total Change"].each do |heading|
+    header = {}
+    header[:content] = heading
+    table[:headings].append(header)
+  end
+
+  result[:lots].each do |lot|
+    lot.each do |tran|
+      row = []
+      [link_to(tran.date, edit_transaction_path(tran)), tran.action ? tran.action.name.capitalize : "",
+        dollar_str(tran.price), tran.quantity, "Lot", dollar_str(tran.fees),  dollar_str(tran.amount)].each do |col|
+        column = {}
+        column[:content] = col
+        row.append(column)
+      end
+
+      table[:rows].append(row)
+    end
+  end
+%>
+
+<%= table_helper(table) %>
 <table>
   <tr>
-    <th>Action</th>
-    <th>Symbol</th>
-    <th>Price</th>
-    <th>Quantity</th>
-    <th>Cost</th>
-    <th>Dividends Earned</th>
-    <th>Today's Price</th>
-    <th>Total Earned</th>
-    <th>Percent Return</th>
+    <th>Total Realized</th>
+    <th>Total Unrealized</th>
   </tr>
-<% @analyze.each do |analysis| %>
+
   <tr>
-    <td> <%= analysis[:action] %></td>
-    <td> <%= analysis[:symbol] %></td>
-    <td> $<%= analysis[:price].round(2) %></td>
-    <td> <%= analysis[:quantity].round(2) %></td>
-    <td> $<%= analysis[:cost].round(2) %></td>
-    <td> $<%= analysis[:dividendEarnings].round(2) %></td>
-    <td> $<%= analysis[:currentPrice].round(2) %></td>
-    <td> $<%= analysis[:totalEarned].round(2) %></td>
-    <td> <%= (analysis[:return]*100).round(2) %>%</td>
+    <td> <%= result[:summary][:totalRealizedDollar] %>, <%= result[:summary][:totalRealizedPercent] %></td>
+    <td> <%= result[:summary][:totalUnrealizedDollar] %>, <%= result[:summary][:totalUnrealizedPercent] %></td>
   </tr>
-<% end %>
 </table>
+<% end %>
+
+<%= paginate @symbol_page %>

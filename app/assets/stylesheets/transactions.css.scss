@@ -1,3 +1,39 @@
 // Place all the styles related to the Transactions controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+@mixin summary_table {
+}
+
+$primary_color: #8CC0D9;
+$alternate_row_color: #D9EAF2;
+$highlighted_row_color: #D9F2DA;
+$positive_number: #3E9346;
+$negative_number: #A03A32;
+
+.summary_table {
+  tr {
+
+    th {
+      background: $primary_color;
+      text-align: left;
+    }
+
+  }
+
+  tr.alternate_row {
+    background: $alternate_row_color;
+  }
+
+  tr:hover {
+    background: $highlighted_row_color;
+  }
+}
+
+.positive_number {
+  color: $positive_number;
+}
+
+.negative_number {
+  color: $negative_number;
+}

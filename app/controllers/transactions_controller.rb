@@ -128,7 +128,7 @@ class TransactionsController < ApplicationController
   # Analyze a subset or all transactions.  If no parameter is provided
   # Iterate over every Buy action for now.  Fix this to be a max of 30
   # transactions to avoid timeouts.  TODO: Make this smart
-  def analyze
+  def analyze_old
     @transactions = []
     #if params[:symbol]
       # Compute one transactions
@@ -137,7 +137,7 @@ class TransactionsController < ApplicationController
       # Might need to rename Transaction database fields to lowercase...
       #@transactions = Transaction.find_all_by_Action("Buy", {:conditions => "WHERE user_id = #{current_user.id}"})
       #@transactions = Transaction.find_by_sql("SELECT * FROM transactions WHERE user_id = #{current_user.id} AND action like 'Buy%' LIMIT 20")
-      @transactions = Transaction.joins(:user).joins(:action).where(actions: {name: "buy"}).limit(20)
+      @transactions = Transaction.joins(:user).joins(:action).where(actions: {name: "buy"}, transactions: {:user_id => current_user.id}).limit(20)
       #logger.debug("Printing transactions...")
       #logger.debug(@transactions)
     #end
@@ -152,6 +152,14 @@ class TransactionsController < ApplicationController
       @analyze.append(analyze_transaction(trans))
     end
 
+  end
+
+  def analyze
+    if @stock_source == nil
+      @stock_source = GoogleFinanceScraper.new(DebugLogger.modes[:debug])
+    end
+
+    full_analysis
   end
 
   # TODO: Need to look for sales of this stock, and correlate that with
@@ -193,6 +201,88 @@ class TransactionsController < ApplicationController
   end
 
   private
+    # Staging analysis in tis private function for now
+
+    def full_analysis
+      # Grab a list of different symbols - 10 at a time
+      symbol_records = Transaction.find_by_sql("SELECT DISTINCT symbol FROM transactions WHERE user_id = #{current_user.id}")
+      @symbol_page = Kaminari.paginate_array(symbol_records).page(params[:page]).per(10)
+
+      # Analyze each symbol
+      @results = []
+      @symbol_page.each do |record|
+        if record.symbol == nil or record.symbol.strip.empty?
+          next
+        end
+        @results.append stock_analysis(record.symbol)
+      end
+    end
+
+    # + Group by Symbol, group by lot, order by date
+    # 
+    # ++ ARMH - $30.00 ++
+    # Date    Action    Price   Quantity    Lot   Realized Gain   Unrealized Gain   Fees
+    # 5/5/14    Buy   $40.00    20      N   $0.00     $0.00 / 0%
+    # 6/5/14    Sell    $50.00    10      N   $100, 25%   $100, 25%
+    # Today   Summary   $30.00    10      N   $100, 25%   -$100, -25%
+    # 
+    # 7/5/14    Buy   $30.00    20      M   $0.00     $0.00
+    # 8/5/14    Sell    $25.00    10      M   -$50.00     -$50.00
+    # Today   Summary   $30.00    10      M   -$50.00     $0.00
+    # 
+    # 5/25/14   Dividends per share NumberSharesAtThisTime  -   $$, Yield%
+    # 7/25/14   Dividends lump sum  1     -   $$
+    # 
+    # ARMH Summary
+    # Total Realized Gains    Total Unrealized Gains
+    # $$$, %        $$$, %
+    def stock_analysis(symbol)
+      # Grab current price
+      logger.debug "Looking up symbol #{symbol}\n"
+      current_info = @stock_source.lookup_by_symbol(symbol)
+
+      # Get all transactions (group by lots when available)
+      tran_records = Transaction.joins(:user).where(transactions: {:symbol => symbol, :user_id => current_user.id}).order("date")
+
+      lots = []
+      lots.append(tran_records)
+
+      summary = {}
+      summary[:totalRealizedDollar] = 0.00
+      summary[:totalRealizedPercent] = 0.00
+      summary[:totalUnrealizedDollar] = 0.00
+      summary[:totalUnrealizedPercent] = 0.00
+
+      # Compute the gains and losses for each "lot"
+      lots.each do |lot|
+        quantity = 0.0
+        cost = 0.0
+
+        lot.each do |tran|
+          if (tran.is_dividend? or tran.is_sell?)
+            summary[:totalRealizedDollar] += tran.amount
+          elsif (tran.is_buy?)
+            quantity += tran.quantity
+            # Buy amounts are negative
+            cost += tran.amount.abs
+          elsif (tran.is_fee?)
+            cost += tran.amount.abs
+          end
+        end
+        summary[:totalUnrealizedDollar] = quantity * current_info["price"]
+      end
+
+      result = {}
+      result[:lots] = lots
+      result[:summary] = summary
+      result[:symbol] = symbol
+      result[:currentPrice] = current_info["price"]
+      result[:change_amt] = current_info["change_amt"]
+
+      return result
+    end
+
+
     # Use callbacks to share common setup or constraints between actions.
     def set_transaction
       @transaction = Transaction.find(params[:id])
@@ -200,7 +290,7 @@ class TransactionsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def transaction_params
-      params.require(:transaction).permit(:date, :action, :quantity, :symbol, :description, :price, :amount, :fees, :user_id)
+      params.require(:transaction).permit(:date, :action, :quantity, :symbol, :description, :price, :amount, :fees, :user_id, :action_id)
     end
 
     # Check if the user is signed in.  If not, redirect to sign in page.

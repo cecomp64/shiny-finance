@@ -47,7 +47,7 @@ describe SchwabParser do
       end
     end
 
-    action_answers = ["Buy", nil, nil, "Dividend", "Fee"]
+    action_answers = ["Buy", "Transfer", "Interest", "Dividend", "Fee"]
     action_pos = 1
     it "converts actions" do
       csv_c = csv_l.clone

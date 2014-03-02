@@ -4,8 +4,8 @@
     <%= f.date_select :date %>
   </div>
   <div class="field">
-    <%= f.label :action %><br>
-    <%= f.text_area :action %>
+    <%= f.label :action_id %><br>
+    <%= f.select :action_id, Action.all.map {|a| [a.name.capitalize, a.id]} %>
   </div>
   <div class="field">
     <%= f.label :quantity %><br>

@@ -40,12 +40,22 @@ class GoogleFinanceScraper
   # Returns:
   # [details] A details hash with information about the stock.  Returns nil on failure
   def lookup_by_exchange_and_symbol(exchange, symbol)
+    # Error check symbol
+    if (symbol == nil or not symbol.is_a? String or symbol.strip.empty?)
+      return nil
+    end
+
     details = {}
     doc = Nokogiri::HTML(open("http://www.google.com/finance?q=#{exchange}:#{symbol}"))
     
     # Check for error
     # TODO: if we get close to a symobl, we get a "did you mean" message... need to fix
-    err = doc.css('#app div#gf-viewc div')[6].content
+    err_div = doc.css('#app div#gf-viewc div')[6]
+    err = nil
+    if err_div != nil
+      err = err_div.content
+    end
+
     #err = doc.css('#app div#gf-viewc')[6].content
     if err and (err =~ /produced no matches/ or err =~ /Did you mean/)
       return nil
@@ -60,7 +70,8 @@ class GoogleFinanceScraper
     details["price"] = convert_dollar_amount(price)
 
     t = doc.css('.id-price-change span span')
-    details["change_amt"] = t[0].content.strip
+    change_amt = t[0].content.strip
+    details["change_amt"] = convert_dollar_amount(change_amt)
     details["change_pct"] = t[1].content.strip
 
     tr_l = doc.css('table.snap-data tr')

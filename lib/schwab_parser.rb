@@ -83,6 +83,7 @@ class SchwabParser
   # if one is not explicitly listed
   def parse_action(entry)
     action = entry[@action_pos]
+    amount = convert_dollar_amount(entry[@amount_pos])
     if action == nil
       # Look for an action in the description
       desc = entry[@desc_pos]
@@ -90,7 +91,18 @@ class SchwabParser
         action = "Dividend"
       elsif (desc =~ /type:.* FEE/)
         action = "Fee"
+      elsif (desc =~ /type:.* TRANSFER/)
+        action = "Transfer"
+      elsif (desc =~ /type:.* interest/i)
+        action = "Interest"
       end
+
+      # Assign an action if we don't have one and the amount
+      # is negative...
+      if not action and amount < 0
+        action = "Fee"
+      end
+
     end
 
     return action
