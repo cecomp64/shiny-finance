@@ -14,6 +14,8 @@ class User < ActiveRecord::Base
 
 	# Add password and password_confirmation as virtual variables
 	has_secure_password
+  has_many :transactions
+  has_many :lots
 
 	def User.new_remember_token
 		SecureRandom.urlsafe_base64

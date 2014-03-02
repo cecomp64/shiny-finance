@@ -6,6 +6,7 @@ require 'rspec/rails'
 require 'rspec/autorun'
 require 'launchy'
 require 'google_finance_scraper'
+require 'capybara/rspec'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -44,4 +45,5 @@ RSpec.configure do |config|
   config.order = "random"
 
   config.include Capybara::DSL
+  config.include FactoryGirl::Syntax::Methods
 end

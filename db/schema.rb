@@ -11,13 +11,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140301192415) do
+ActiveRecord::Schema.define(version: 20140302062358) do
 
   create_table "actions", force: true do |t|
     t.string "name"
   end
 
   add_index "actions", ["name"], name: "index_actions_on_name", unique: true
+
+  create_table "lots", force: true do |t|
+    t.integer  "quantity_remaining", default: 0, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "user_id"
+  end
+
+  add_index "lots", ["user_id"], name: "index_lots_on_user_id"
 
   create_table "transactions", force: true do |t|
     t.date     "date"
@@ -31,8 +40,10 @@ ActiveRecord::Schema.define(version: 20140301192415) do
     t.datetime "updated_at"
     t.integer  "user_id"
     t.integer  "action_id"
+    t.integer  "lot_id"
   end
 
+  add_index "transactions", ["lot_id"], name: "index_transactions_on_lot_id"
   add_index "transactions", ["user_id"], name: "index_transactions_on_user_id"
 
   create_table "users", force: true do |t|
