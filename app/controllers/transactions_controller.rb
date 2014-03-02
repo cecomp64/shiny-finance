@@ -259,17 +259,22 @@ class TransactionsController < ApplicationController
         cost = 0.0
 
         lot.each do |tran|
-          if (tran.is_dividend? or tran.is_sell?)
-            summary[:totalRealizedDollar] += tran.amount
-          elsif (tran.is_buy?)
-            quantity += tran.quantity
-            # Buy amounts are negative
-            cost += tran.amount.abs
-          elsif (tran.is_fee?)
-            cost += tran.amount.abs
-          end
+          if (tran.action)
+            if (tran.action.is_dividend? or tran.action.is_sell? or tran.action.is_interest?)
+              summary[:totalRealizedDollar] += tran.amount
+              quantity -= tran.quantity
+            elsif (tran.action.is_buy?)
+              quantity += tran.quantity
+              # Buy amounts are negative
+              cost += tran.amount.abs
+            elsif (tran.action.is_fee?)
+              cost += tran.amount.abs
+            end
+          end # if tran.action
         end
         summary[:totalUnrealizedDollar] = quantity * current_info["price"]
+        summary[:totalCost] = 0-cost
+        summary[:netValue] = summary[:totalUnrealizedDollar] + summary[:totalRealizedDollar] - cost
       end
 
       result = {}

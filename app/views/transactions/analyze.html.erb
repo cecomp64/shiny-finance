@@ -31,17 +31,15 @@
 %>
 
 <%= table_helper(table) %>
-<table>
-  <tr>
-    <th>Total Realized</th>
-    <th>Total Unrealized</th>
-  </tr>
-
-  <tr>
-    <td> <%= result[:summary][:totalRealizedDollar] %>, <%= result[:summary][:totalRealizedPercent] %></td>
-    <td> <%= result[:summary][:totalUnrealizedDollar] %>, <%= result[:summary][:totalUnrealizedPercent] %></td>
-  </tr>
-</table>
+<%= table_helper(
+      {headings: [{content: "Total Realized"}, {content: "Total Unrealized"}, {content: "Total Cost"}, {content: "Net Value"}],
+       class: "summary_table",
+       rows: [
+         [{content: dollar_str(result[:summary][:totalRealizedDollar])}, {content: dollar_str(result[:summary][:totalUnrealizedDollar])},
+           {content: dollar_str(result[:summary][:totalCost])}, {content: dollar_str(result[:summary][:netValue])}]
+       ]
+      }
+    ) %>
 <% end %>
 
 <%= paginate @symbol_page %>
