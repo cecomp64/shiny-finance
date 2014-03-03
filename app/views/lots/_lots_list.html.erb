@@ -1,0 +1,52 @@
+<% 
+# lots_list partial
+#
+# Requires the following class variables to be set:
+#  @lots - List of lots to display
+#  @select_lots - boolean indicating whether or not to add form elements for selecting a lot
+
+# Default to no select
+if not defined? @select_lots
+  @select_lots = false
+end
+
+if @lots != nil 
+  @lots.each do |lot| %>
+  <h2>Lot <%= lot.id %>
+    <%= radio_button_tag(:lot_id, lot.id) if @select_lots %>
+  </h2>
+
+<%
+  # Construct a table struct
+  table = {}
+  table[:headings] = []
+  table[:rows] = []
+  table[:class] = "summary_table"
+  headings = ["Date", "Action", "Price", "Quantity", "Lot", "Fees", "Total Change"]
+  headings.each do |heading|
+    header = {}
+    header[:content] = heading
+    table[:headings].append(header)
+  end
+
+  lot.transactions.each do |tran|
+    row = []
+    columns = [ 
+      tran.date, tran.action ? tran.action.name.capitalize : "",
+      dollar_str(tran.price), tran.quantity, tran.lot_id, dollar_str(tran.fees),  dollar_str(tran.amount)]
+
+    columns.each do |col|
+      column = {}
+      column[:content] = col
+      row.append(column)
+    end
+
+    table[:rows].append(row)
+  end
+
+%>
+<%= table_helper(table) %>
+  <% end %>
+<% end %>
+
+

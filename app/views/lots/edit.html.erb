@@ -1,0 +1,11 @@
+<h1>Editing Lots</h1>
+
+<%= form_tag({controller: "lots", action: "update"}, method: "post") do %>
+
+<%= render 'lots_list' %>
+<%= render 'transactions_select' %>
+
+<%= 
+submit_tag("Add Selected Transactions To Lots")
+%>
+<% end %>

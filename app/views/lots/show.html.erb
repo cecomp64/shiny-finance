@@ -1,0 +1,50 @@
+
+<p>
+  <strong>Date:</strong>
+  <%= @transaction.date %>
+</p>
+
+<p>
+  <strong>Action:</strong>
+  <% if @transaction.action %>
+  <%= @transaction.action.name.capitalize %>
+  <%end%>
+</p>
+
+<p>
+  <strong>Quantity:</strong>
+  <%= @transaction.quantity %>
+</p>
+
+<p>
+  <strong>Symbol:</strong>
+  <%= @transaction.symbol %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @transaction.description %>
+</p>
+
+<p>
+  <strong>Price:</strong>
+  <%= @transaction.price %>
+</p>
+
+<p>
+  <strong>Amount:</strong>
+  <%= @transaction.amount %>
+</p>
+
+<p>
+  <strong>Fees:</strong>
+  <%= @transaction.fees %>
+</p>
+
+<p>
+  <strong>user_id:</strong>
+  <%= @transaction.user_id %>
+</p>
+
+<%= link_to 'Edit', edit_transaction_path(@transaction) %> |
+<%= link_to 'Back', transactions_path %>
