@@ -38,7 +38,7 @@
   </div>
   <div class="field">
     <%= f.label :lot_id %><br>
-    <%= f.select :lot_id, Lot.select(:id).where(user_id: current_user.id).all.map{|a| [a.id, a.id]}.append(["new", "new"]).append(["None", "nil"]) %>
+    <%= link_to("Edit lots", "#{lots_edit_path}?sel_t=#{@transaction.id}") %>
   </div>
   <div class="actions">
     <%= f.submit %>

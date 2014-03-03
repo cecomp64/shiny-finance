@@ -18,7 +18,7 @@ class LotsController < ApplicationController
 
   # GET /lots/new
   def new
-    @lot = lot.new
+    @lot = Lot.new
   end
 
   # GET /lots/edit
@@ -30,10 +30,19 @@ class LotsController < ApplicationController
     @transactions = current_user.transactions.where("action_id=#{Action.find_by_name('buy').id} OR action_id=#{Action.find_by_name('sell').id}")
     @lots = current_user.lots
     @select_lots = true
-  end
 
-  # GET /import
-  def import
+    logger.debug ("selected: #{params[:sel_t]}")
+    if defined? @selected_transactions and @selected_transactions
+      logger.debug("appending...")
+      @selected_transactions.append(params[:sel_t])
+    else
+      logger.debug("replacing...")
+      @selected_transactions = [params[:sel_t]]
+    end
+
+    # Convert selected transactions to integers
+    @selected_transactions = @selected_transactions.map{|id| id.to_i}
+
   end
 
   # POST /lots
@@ -43,11 +52,11 @@ class LotsController < ApplicationController
 
     respond_to do |format|
       if @lot.save
-        format.html { redirect_to @lot }
-        format.json { render action: 'show', status: :created, location: @lot }
+        flash.now[:success] = "Created new Lot #{@lot.id}"
+        format.html { redirect_to lots_edit_path }
       else
+        flash.now[:error] = "Failed to create Lot.  Please try again later."
         format.html { render action: 'new' }
-        format.json { render json: @lot.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -64,9 +73,16 @@ class LotsController < ApplicationController
 
     # ... and a lot id
     lot_id = params[:lot_id]
-    @lot = Lot.find(lot_id) if lot_id != nil
+    if lot_id == "new"
+      @lot = Lot.create(user_id: current_user.id)
+    else
+      @lot = Lot.find(lot_id) if lot_id != nil
+    end
+
     if (lot_id = nil or @lot == nil)
       flash[:error] = "Invalid lot selection.  Please make sure you select one lot and at least one transaction."
+      # The below assignment does not persist... TODO: Pass list of selected transactions back to edit
+      @selected_transactions = transaction_ids
       redirect_to lots_edit_path
       return
     end
@@ -74,22 +90,38 @@ class LotsController < ApplicationController
     # Create a list of transactions
     transactions = Transaction.find(transaction_ids)
 
-    # If we're all good... update and save
-    @lot.transactions += transactions
-    if @lot.save
+    if @lot.add_transactions(transactions) and @lot.save
       flash[:success] = "Successfully added #{transactions.count} #{'transaction'.pluralize(transactions.count)} to Lot #{@lot.id}"
       redirect_to lots_edit_path
+      return
+    else
+      flash[:error] = ""
+      if @lot.errors.any?
+        @lot.errors.full_messages.each do |message|
+          flash[:error] += "#{message}  "
+        end
+      else
+        flash[:error] = "Unknown error"
+      end
+      redirect_to lots_edit_path
+      return
     end
   end
 
   # DELETE /lots/1
   # DELETE /lots/1.json
   def destroy
-    @lot.destroy
-    respond_to do |format|
-      format.html { redirect_to lots_url }
-      format.json { head :no_content }
+    # Find all the associated transactions, and set their lots to nil
+    Transaction.find_all_by_lot_id(@lot.id).each do |trans|
+      trans.lot = nil
+      trans.save
     end
+
+    @lot.destroy
+
+    flash.now[:success] = "Deleted Lot #{@lot.id}"
+    redirect_to lots_edit_path
+    return
   end
 
   # Delete all lots for the signed in user

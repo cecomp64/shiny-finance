@@ -1,0 +1,26 @@
+// Place all the styles related to the lot controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+@import 'application_styles';
+
+.left {
+  float: left;
+  display: inline;
+  position: relative;
+  left: 15px;
+}
+
+.right {
+  float: right;
+  display: inline;
+  position: relative;
+  right: 15px;
+}
+
+.lots_edit {
+  width: 45%;
+  padding: 10px;
+  height: 600px;
+  overflow: auto;
+}

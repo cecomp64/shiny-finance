@@ -1,11 +1,27 @@
 <h1>Editing Lots</h1>
+<p>We treat Lots as a collection of available stock that you have to sell.  A Buy transaction is the seed
+for a new Lot - from which, Sell transactions can draw.  In other words, it specifies which stock you sold
+in any given Sell transaction.  By making this distinction, we can more precisely calculate what your gains
+are for every Sell transaction.  If you were to sell your AAPL stock that you bought at $50, you'd have a much
+different return than if you sold AAPL stock that you bought at $500.  This is what we want to reflect when
+we calculate your gains.</p>
+
+<p>Lots adhere to the following rules:</p>
+
+<ol>
+  <li>The number of Sell transactions cannot exceed the number of Buy transactions.  You can't sell stock that you don't have.</li>
+  <li>Lots contain all one type of equity.  We need to compare AAPLs with AAPLs, not AAPLs and GOOGs.</li>
+  <li>Lots should contain only one Buy transaction.  Each Buy creates its own pool from which to sell.  This is not yet implemented</li>
+</ol>
 
 <%= form_tag({controller: "lots", action: "update"}, method: "post") do %>
 
+<div class="left lots_edit primary_background">
 <%= render 'lots_list' %>
-<%= render 'transactions_select' %>
+<%= submit_tag("Add Selected Transactions To Lots") %>
+</div>
 
-<%= 
-submit_tag("Add Selected Transactions To Lots")
-%>
+<div class="right lots_edit secondary_background">
+<%= render 'transactions_select' %>
+</div>
 <% end %>

@@ -1,4 +1,13 @@
+<h2>Transactions</h2>
 <%
+  # Look for any pre-selected list items
+  if not defined? @selected_transactions
+    logger.debug("@selected_transactions not defined!")
+    @selected_transactions = []
+  else
+    logger.debug("@selected_transactions: #{@selected_transactions}")
+  end
+
   # Setup table heading to display each transaction
   # Only show an abbreviated table
   table = {}
@@ -14,7 +23,7 @@
   # Need the controller to populate @transactions
   @transactions.each do |tran|
     row = []
-    [ check_box_tag("transactions[]", tran.id),
+    [ check_box_tag("transactions[]", tran.id, @selected_transactions.include?(tran.id) ? true : false),
       # TODO: AJAX Popup for more transaction info
       #link_to(tran.date, edit_transaction_path(tran)), 
       tran.date, tran.symbol.upcase, tran.action ? tran.action.name.capitalize : "",

@@ -16,6 +16,7 @@ if @lots != nil
     <%= radio_button_tag(:lot_id, lot.id) if @select_lots %>
   </h2>
 
+<% if lot.transactions.count > 0 %>
 <%
   # Construct a table struct
   table = {}
@@ -46,7 +47,12 @@ if @lots != nil
 
 %>
 <%= table_helper(table) %>
+<%= link_to "Delete Lot #{lot.id}", lot, method: :delete, data: {confirm: "Are you sure you want to delete Lot #{lot.id}?"} %>
   <% end %>
+  <% 
+  end # if lot.transactions.count...
+  %>
 <% end %>
 
+<%= link_to "Create New Lot", new_lot_path %>
 

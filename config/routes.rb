@@ -3,7 +3,7 @@ ShinyFinance::Application.routes.draw do
 
   resources :transactions
   resources :users
-  resources :lots, only: [:new, :create, :destroy, :index]
+  resources :lots, only: [:new, :index, :create, :destroy]
   resources :sessions, only: [:new, :create, :destroy]
 
   match '/help', to: 'static_pages#help', via: 'get'
@@ -18,6 +18,7 @@ ShinyFinance::Application.routes.draw do
   match '/delete_my_transactions', to: 'transactions#delete_all', via: 'get', as: 'delete_all_transactions'
   match '/lots/edit', to: 'lots#edit', via: 'get', as: 'lots_edit'
   match '/lots/update', to: 'lots#update', via: 'post', as: 'lots_update'
+  #match '/lots/destroy', to: 'lots#destroy', via: 'post', as: 'lots_destroy'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

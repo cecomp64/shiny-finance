@@ -1,35 +1,9 @@
-<%= form_for(@transaction) do |f| %>
-  <div class="field">
-    <%= f.label :date %><br>
-    <%= f.date_select :date %>
-  </div>
-  <div class="field">
-    <%= f.label :action_id %><br>
-    <%= f.select :action_id, Action.all.map {|a| [a.name.capitalize, a.id]} %>
-  </div>
-  <div class="field">
-    <%= f.label :quantity %><br>
-    <%= f.number_field :quantity %>
-  </div>
-  <div class="field">
-    <%= f.label :symbol %><br>
-    <%= f.text_field :symbol %>
-  </div>
+<%= form_for(@lot) do |f| %>
   <div class="field">
     <%= f.label :description %><br>
-    <%= f.text_area :description %>
-  </div>
-  <div class="field">
-    <%= f.label :price %><br>
-    <%= f.text_field :price %>
-  </div>
-  <div class="field">
-    <%= f.label :amount %><br>
-    <%= f.text_field :amount %>
-  </div>
-  <div class="field">
-    <%= f.label :fees %><br>
-    <%= f.text_field :fees %>
+    <%= 
+    #f.text_field :description 
+    %>
   </div>
   <div class="field">
     <%= f.label :user_id %><br>
