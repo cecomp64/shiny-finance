@@ -10,7 +10,7 @@
 
 	<div id="content">
   <div id="header">
-    <img src="/assets/coin_sm.png" width="40px" height="40px" class="header_icon">
+    <%= image_tag "coin_sm.png", width:"40px", height:"40px", class:"header_icon" %>
 	  <h1 class="header_title"><%= full_title(yield(:title)) %></h1>
     <ul>
       <li><%= link_to "Home", root_path %></li>
