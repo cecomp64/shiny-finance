@@ -3,6 +3,7 @@ require 'google_finance_scraper'
 class TransactionsController < ApplicationController
   before_action :set_transaction, only: [:show, :edit, :update, :destroy]
   before_action :signed_in_user, only: [:show, :edit, :update, :destroy, :index, :import, :import_schwab_csv, :analyze, :delete_all]
+  #before_validate :sanitize_params
 
   # GET /transactions
   # GET /transactions.json
@@ -110,6 +111,7 @@ class TransactionsController < ApplicationController
 
         # Remove the act entry, otherwise Ruby will be confused
         trans.delete(:act)
+        trans[:symbol] = trans[:symbol].upcase.strip
 
         t = Transaction.new(trans)
         if not t.save
@@ -294,7 +296,9 @@ class TransactionsController < ApplicationController
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
+    # Also make sure parameters follow certain guidelines - like symbols always capitalized
     def transaction_params
+      params[:transaction][:symbol] = params[:transaction][:symbol].upcase.strip
       params.require(:transaction).permit(:date, :action, :quantity, :symbol, :description, :price, :amount, :fees, :user_id, :action_id)
     end
 
@@ -302,4 +306,5 @@ class TransactionsController < ApplicationController
 		def signed_in_user
 			redirect_to signin_url, notice: "Please sign in." unless signed_in?
 		end
+
 end

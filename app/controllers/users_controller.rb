@@ -13,6 +13,12 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.json
   def show
+    # Get some sample transactions to display
+    # For now just pick the first two sumbols
+    # TODO: Build a list of favorites
+    # TODO: Call analyze for these... move analyze to a common location
+    #symbols = Transaction.select(:symbol).where(user_id: 14).distinct.limit(2)
+    @transactions = current_user.transactions.limit(5)
   end
 
   # GET /users/new

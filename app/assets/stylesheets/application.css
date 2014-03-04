@@ -16,7 +16,7 @@
 	clear: both;
 	float: left;
 	width: 100%;
-	margin-top: 45px;
+	margin-top: 95px;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
@@ -35,6 +35,7 @@
 }
 
 #header ul {
+  display: inline;
   position: absolute;
   right: 10px;
 }
@@ -44,4 +45,24 @@
   float: left;
   position: relative;
   margin-left: 10px;
+}
+
+.header_icon {
+  float: left;
+  display: inline;
+  margin: 5px;
+}
+
+.header_title {
+  position: relative;
+  top: 15px;
+  left: 10px;
+  display: inline;
+}
+
+#content {
+  display: inline;
+  margin-top: 50px;
+  width: 100%;
+  height: 100%;
 }

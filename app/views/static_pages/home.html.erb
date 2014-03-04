@@ -1,3 +1,16 @@
-<%= provide(:title, 'Home') %>
-<h1>Shiny Finance</h1>
-<p>Place-holder  homepage for the Shiny Finance app</p>
+
+<div id="home_banner">
+    <img src="/assets/coin.png" id="home_banner_image">
+    <div id="home_banner_content">
+      <h1>Organize Investments</h1>
+      <ul>
+        <li>Equities</li>
+        <li>Real Estate</li>
+        <li>Tangible Assets</li>
+      </ul>
+      <h1>Visualize Returns</h1>
+    </div>
+    <div id="home_banner_action_buttons">
+    <%= link_to "Learn More", about_path%> | <%= link_to "Get Started", signin_path %>
+    </div>
+</div>
