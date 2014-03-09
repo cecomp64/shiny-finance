@@ -1,0 +1,8 @@
+
+<p>
+<%= link_to 'New Transaction', new_transaction_path %>
+<%= link_to 'Import Data', import_transactions_path %>
+<%= link_to 'Export Data', "#{transactions_export_path}.csv" %>
+<%= link_to 'Delete All Transactions', delete_all_transactions_path, data: { confirm: 'Are you sure?  This will clear all transaction data.' } %>
+</p>
+

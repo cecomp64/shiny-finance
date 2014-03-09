@@ -1,5 +1,7 @@
-<h1>Listing transactions</h1>
 
+<%= provide :title, "Transactions" %>
+<div id="single_flow" class="primary_background">
+<%= render 'actions' %>
 <% if @transactions != nil %>
 <table class="summary_table">
   <thead>
@@ -49,8 +51,7 @@
   </tbody>
 </table>
 <% end %>
-<br>
 
-<%= link_to 'New Transaction', new_transaction_path %>
-<%= link_to 'Import Data', import_transactions_path %>
-<%= link_to 'Delete All Transactions', delete_all_transactions_path, data: { confirm: 'Are you sure?  This will clear all transaction data.' } %>
+<%= render 'actions' %>
+
+</div>

@@ -1,5 +1,6 @@
 <%= provide :title, "Sign in" %>
 <%= provide :heading, "Sign in" %>
+<div id="single_flow" class="primary_background">
 
 <%-# form_for (:session, url: sessions_url) do |f| %>
 <%= form_tag sessions_url %>
@@ -16,3 +17,4 @@
 	</div>
 
 <p>New user? <%= link_to "Sing up now!", signup_path %></p>
+</div>

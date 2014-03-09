@@ -8,13 +8,19 @@
     logger.debug("@selected_transactions: #{@selected_transactions}")
   end
 
+  if not defined? @select_lots
+    @select_lots = false
+  end
+
   # Setup table heading to display each transaction
   # Only show an abbreviated table
   table = {}
   table[:headings] = []
   table[:rows] = []
   table[:class] = "summary_table"
-  ["Select", "Date", "Symbol", "Action", "Price", "Quantity", "Lot"].each do |heading|
+  headings = ["Date", "Symbol", "Action", "Price", "Quantity", "Lot"]
+  headings.insert(0, "Select") if @select_lots
+  headings.each do |heading|
     header = {}
     header[:content] = heading
     table[:headings].append(header)
@@ -23,11 +29,13 @@
   # Need the controller to populate @transactions
   @transactions.each do |tran|
     row = []
-    [ check_box_tag("transactions[]", tran.id, @selected_transactions.include?(tran.id) ? true : false),
+    columns = [ 
       # TODO: AJAX Popup for more transaction info
       #link_to(tran.date, edit_transaction_path(tran)), 
       tran.date, tran.symbol.upcase, tran.action ? tran.action.name.capitalize : "",
-      dollar_str(tran.price), tran.quantity, tran.lot_id].each do |col|
+      dollar_str(tran.price), tran.quantity, tran.lot_id]
+    columns.insert(0, check_box_tag("transactions[]", tran.id, @selected_transactions.include?(tran.id) ? true : false)) if @select_lots
+      columns.each do |col|
       column = {}
       column[:content] = col
       row.append(column)

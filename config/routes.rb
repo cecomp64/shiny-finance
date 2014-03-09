@@ -1,6 +1,7 @@
 ShinyFinance::Application.routes.draw do
   root 'static_pages#home'
 
+  match '/transactions/export(.:format)', to: 'transactions#export', via: 'get', as: 'transactions_export'
   resources :transactions
   resources :users
   resources :lots, only: [:new, :index, :create, :destroy]
@@ -12,6 +13,7 @@ ShinyFinance::Application.routes.draw do
   match '/signin', to: 'sessions#new', via: 'get'
   match '/signout', to: 'sessions#destroy', via: 'delete'
   match '/import', to: 'transactions#import', via: 'get', as: 'import_transactions'
+  match '/export', to: 'transactions#export', via: 'get', as: 'export_transactions'
   match '/import_schwab_csv', to: 'transactions#import_schwab_csv', via: 'post', as: 'import_schwab_csv'
   #match '/transactions/analyze/:symbol', to: 'transactions#analyze', via: 'get', as: 'analyze_transaction_path'
   match '/analyze', to: 'transactions#analyze', via: 'get', as: 'analyze_transactions'

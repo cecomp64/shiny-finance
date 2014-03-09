@@ -1,3 +1,4 @@
+<div id="single_flow" class="primary_background">
 <h1>Editing Lots</h1>
 <p>We treat Lots as a collection of available stock that you have to sell.  A Buy transaction is the seed
 for a new Lot - from which, Sell transactions can draw.  In other words, it specifies which stock you sold
@@ -16,6 +17,7 @@ we calculate your gains.</p>
 
 <%= form_tag({controller: "lots", action: "update"}, method: "post") do %>
 
+</div>
 <div class="left lots_edit primary_background">
 <%= render 'lots_list' %>
 <%= submit_tag("Add Selected Transactions To Lots") %>
@@ -25,3 +27,4 @@ we calculate your gains.</p>
 <%= render 'transactions_select' %>
 </div>
 <% end %>
+&nbsp;

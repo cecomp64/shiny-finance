@@ -179,7 +179,11 @@ class SchwabParser
       end
 
     # First row is some kind of non-csv heading
-    csv_l.slice!(0)
+    check = csv_l[0]
+    if (check and not check.to_s.match(/date/i))
+      csv_l.slice!(0)
+    end
+
     headers = csv_l.slice!(0)
     parse_headers(headers)
     transactions = []

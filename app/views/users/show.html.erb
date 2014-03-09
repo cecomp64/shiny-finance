@@ -1,7 +1,10 @@
 <% provide(:title, "Profile") %>
 
-<h1 class="profile_header"><%= @user.name %> </h1> [<%= link_to 'Edit', edit_user_path(@user) %>]
 
-<%= render 'lots/transactions_select' %>
+<div id="single_flow" class="primary_background">
+  <h1 class="profile_header"><%= @user.name %> </h1> [<%= link_to 'Edit', edit_user_path(@user) %>] [<%= link_to 'Transactions', transactions_path %>] [<%= link_to 'Lots', lots_edit_path %>] 
+  [<%= link_to 'Analysis', analyze_transactions_path %>]
+  <%= render 'lots/transactions_select' %>
+  <%= link_to "More...", transactions_path %>
 
-<%= link_to "More...", transactions_path %>
+</div>

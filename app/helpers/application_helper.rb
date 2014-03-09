@@ -77,11 +77,13 @@ module ApplicationHelper
     # rows
     if table[:rows]
       table[:rows].each_with_index do |row, i|
+        # If we want to make each row a checkbox
         table_str += '<tr'
         table_str += " class=\"alternate_row\"" if (i%2 == 1)
         table_str += '>'
   
         # columns
+        #table_str += "<label>"
         row.each do |column|
           class_s = ""
           class_s = column[:style] if (column[:style])
@@ -94,6 +96,7 @@ module ApplicationHelper
         end # col
 
 
+        #table_str += "</label>"
         table_str += '</tr>'
       end # each row
     end # rows

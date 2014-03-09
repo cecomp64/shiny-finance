@@ -5,6 +5,11 @@ $highlighted_row_color: #D9F2DA;
 $positive_number: #3E9346;
 $negative_number: #A03A32;
 
+@mixin center() {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .primary_background {
   background: #F3F8FA;
 }
@@ -12,3 +17,19 @@ $negative_number: #A03A32;
 .secondary_background {
   background: #F3F6FA;
 }
+
+#single_flow {
+  display: block;
+  @include center();
+  width: 95%;
+  height: 100%;
+  padding: 20px;
+}
+
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+  -moz-border-radius: $radius;
+  -ms-border-radius: $radius;
+  border-radius: $radius;
+}
+

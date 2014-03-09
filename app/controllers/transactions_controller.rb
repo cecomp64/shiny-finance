@@ -32,6 +32,26 @@ class TransactionsController < ApplicationController
   def import
   end
 
+  # GET /export
+  # Return all transactions as a CSV
+  def export
+    @transactions = Transaction.find_all_by_user_id(current_user.id)
+    csv = ""
+    i = 0
+    @transactions.each do |trans|
+      if (i==0)
+        csv += trans.to_csv(true)
+      else
+        csv += trans.to_csv(false)
+      end
+      i += 1
+    end
+
+    respond_to do |format|
+      format.csv { send_data csv }
+    end
+  end
+
   # POST /transactions
   # POST /transactions.json
   def create
@@ -262,7 +282,9 @@ class TransactionsController < ApplicationController
 
         lot.each do |tran|
           if (tran.action)
-            if (tran.action.is_dividend? or tran.action.is_sell? or tran.action.is_interest?)
+            if (tran.action.is_dividend? or tran.action.is_interest?)
+              summary[:totalRealizedDollar] += tran.amount
+            elsif (tran.action.is_sell?)
               summary[:totalRealizedDollar] += tran.amount
               quantity -= tran.quantity
             elsif (tran.action.is_buy?)
