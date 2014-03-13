@@ -5,7 +5,6 @@ describe GoogleFinanceScraper do
   scraper = GoogleFinanceScraper.new(DebugLogger.modes[:debug])
   subject {scraper}
 
-  #it {should be_valid}
   describe "Valid queries with Exchange and Symbol" do
     details_nvd = scraper.lookup_by_exchange_and_symbol("NASDAQ", "NVDA")
     it "NASDAQ:NVDA should have a valid name field" do

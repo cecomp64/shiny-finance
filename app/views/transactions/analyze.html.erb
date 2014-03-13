@@ -37,7 +37,7 @@
        class: "summary_table",
        rows: [
          [{content: dollar_str(result[:summary][:totalRealizedDollar])}, {content: dollar_str(result[:summary][:totalUnrealizedDollar])},
-           {content: dollar_str(result[:summary][:totalCost])}, {content: dollar_str(result[:summary][:netValue])}]
+           {content: dollar_str(result[:summary][:totalCost])}, {content: "#{dollar_str(result[:summary][:netValue])}, #{percent_str(result[:summary][:percent])}"}]
        ]
       }
     ) %>

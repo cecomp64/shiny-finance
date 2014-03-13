@@ -177,10 +177,6 @@ class TransactionsController < ApplicationController
   end
 
   def analyze
-    if @stock_source == nil
-      @stock_source = GoogleFinanceScraper.new(DebugLogger.modes[:debug])
-    end
-
     full_analysis
   end
 
@@ -230,13 +226,18 @@ class TransactionsController < ApplicationController
       symbol_records = Transaction.find_by_sql("SELECT DISTINCT symbol FROM transactions WHERE user_id = #{current_user.id}")
       @symbol_page = Kaminari.paginate_array(symbol_records).page(params[:page]).per(10)
 
+      # Grab bulk data for these symbols
+      all_symbols = @symbol_page.map {|record| record.symbol}
+      y = YahooFinanceScraper.new
+      stock_info = y.lookup_by_symbols(all_symbols)
+
       # Analyze each symbol
       @results = []
-      @symbol_page.each do |record|
+      @symbol_page.each_with_index do |record, i|
         if record.symbol == nil or record.symbol.strip.empty?
           next
         end
-        @results.append stock_analysis(record.symbol)
+        @results.append stock_analysis(record.symbol, stock_info[i])
       end
     end
 
@@ -258,10 +259,18 @@ class TransactionsController < ApplicationController
     # ARMH Summary
     # Total Realized Gains    Total Unrealized Gains
     # $$$, %        $$$, %
-    def stock_analysis(symbol)
+    def stock_analysis(symbol, current_info = nil)
       # Grab current price
       logger.debug "Looking up symbol #{symbol}\n"
-      current_info = @stock_source.lookup_by_symbol(symbol)
+
+      # Lookup stock info if we didn't already get it in batch
+      if not current_info
+        if @stock_source == nil
+          @stock_source = GoogleFinanceScraper.new(DebugLogger.modes[:debug])
+        end
+
+        current_info = @stock_source.lookup_by_symbol(symbol)
+      end
 
       # Get all transactions (group by lots when available)
       tran_records = Transaction.joins(:user).where(transactions: {:symbol => symbol, :user_id => current_user.id}).order("date")
@@ -299,6 +308,7 @@ class TransactionsController < ApplicationController
         summary[:totalUnrealizedDollar] = quantity * current_info["price"]
         summary[:totalCost] = 0-cost
         summary[:netValue] = summary[:totalUnrealizedDollar] + summary[:totalRealizedDollar] - cost
+        summary[:percent] = summary[:netValue] / cost
       end
 
       result = {}

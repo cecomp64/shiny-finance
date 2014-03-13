@@ -33,9 +33,9 @@ module ApplicationHelper
 
     if amt != nil
       if (amt < 0) 
-        amt_s = '<span class="negative_number">(%.2f\%)</span>' % [amt.abs]
+        amt_s = "<span class=\"negative_number\">(%.2f%%)</span>" % [amt.abs * 100]
       else
-        amt_s = '<span class="positive_number">$%.2f\%</span>' % [amt]
+        amt_s = "<span class=\"positive_number\">%.2f%%</span>" % [amt * 100]
       end
     end
 
